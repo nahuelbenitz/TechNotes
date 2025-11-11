@@ -7,7 +7,10 @@ namespace TechNotes.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<INoteService, NoteService>();
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(typeof(DependencyInyection).Assembly);
+            });
             
             return services;
         }
