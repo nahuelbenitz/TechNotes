@@ -1,0 +1,40 @@
+﻿@page "/notes"
+@attribute [StreamRendering]
+
+@using TechNotes.Application.Notes
+@using TechNotes.Domain.Notes
+@inject INoteService NoteService
+
+
+<PageTitle>Notes</PageTitle>
+<h3>Notes</h3>
+
+@if (!notes.Any())
+{
+    <p>No hay notas que mostrar</p>
+}
+else
+{
+    @foreach (var note in notes)
+    {
+        <h4>@note.Title</h4>
+        <p> @note.Content</p>
+        <small>@note.CreatedAt</small>
+    }
+}
+
+
+@code {
+    private List<Note> notes = new List<Note>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await NoteService.GetAllNotesAsync();
+
+        if (result is not null)
+        {
+            notes = result.ToList();
+        }
+    }
+
+}
