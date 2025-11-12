@@ -1,4 +1,4 @@
-using TechNotes.Components;
+using TechNotes;
 using TechNotes.Application;
 using TechNotes.Infrastructure;
 

@@ -1,0 +1,110 @@
+﻿@page "/note-editor"
+@page "/note-editor/{NoteId:int}"
+
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+
+
+@if (isEditMode && Note is not null)
+{
+    <PageTitle>Editar nota</PageTitle>
+    <h3>Editar Nota</h3>
+    <a href="/notes" class="btn btn-secondary">Volver a notas</a>
+}
+else
+{
+    <PageTitle>Crear Nota</PageTitle>
+    <h3>Crear Nota</h3>
+}
+
+@if (Note is not null)
+{
+    <EditForm Model="Note" OnSubmit="HandleSubmit" FormName="NoteEditorForm">
+        <InputText @bind-Value="Note.Title" placeholder="Titulo" class="form-control mb-2" />
+        <InputTextArea @bind-Value="Note.Content" placeholder="Contenido" class="form-control mb-2" rows="5" />
+        <label>Fecha Publicación:</label>
+        <InputDate @bind-Value="Note.PublishedAt" placeholder="Fecha" class="form-control mb-2" />
+        <label class="form-check-label mb-2">Publicado:</label>
+        <InputCheckbox @bind-Value="Note.IsPublished" class="form-check-input mb-2" />
+        <button type="submit" class="btn btn-primary mt-3 w-100">@(isEditMode ? "Editar" : "Crear")</button>
+    </EditForm>
+    @if (isEditMode)
+    {
+        <form @onsubmit="DeleteNote" @formname="DeleteNoteForm" method="post">
+            <button type="submit" class="btn btn-danger mt-2">Eliminar nota</button>
+            <AntiforgeryToken />
+        </form>
+    }
+}
+
+@code {
+    [SupplyParameterFromForm]
+    private NoteModel? Note { get; set; }
+
+    [Parameter]
+    public int? NoteId { get; set; }
+
+    private bool isEditMode => NoteId is not null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (NoteId is null)
+        {
+            Note = new();
+        }
+        else
+        {
+            var result = await Sender.Send(new GetNoteByIdQuery { Id = (int)NoteId });
+            if (result is not null)
+            {
+                Note ??= result.Adapt<NoteModel>();
+                Note.Id = (int)NoteId;
+            }
+        }
+
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (isEditMode)
+        {
+            var command = Note.Adapt<UpdateNoteCommand>();
+            var result = await Sender.Send(command);
+            if (result is not null)
+            {
+                Note = result.Adapt<NoteModel>();
+
+                Console.WriteLine("Nota actualizada con ID: " + Note.Id);
+            }
+        }
+        else
+        {
+            var command = Note.Adapt<CreateNoteCommand>();
+            var result = await Sender.Send(command);
+            Note = result.Adapt<NoteModel>();
+
+            Console.WriteLine("Nota creada con ID: " + Note.Id);
+        }
+    }
+
+    private async Task DeleteNote()
+    {
+        if(NoteId is null)
+        {
+            return;
+        }
+
+        var command = new DeleteNoteCommand { Id = (int)NoteId };
+        var isSucces = await Sender.Send(command);
+
+        if (isSucces)
+        {
+            Console.WriteLine("Nota eliminada con ID: " + NoteId);
+            NavigationManager.NavigateTo("/notes");
+        }
+        else
+        {
+            Console.WriteLine("Nota Error Eliminación con ID: " + NoteId);
+        }
+    }
+}

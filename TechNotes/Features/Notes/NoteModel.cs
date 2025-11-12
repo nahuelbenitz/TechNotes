@@ -1,4 +1,4 @@
-﻿namespace TechNotes.Components.Pages
+﻿namespace TechNotes.Features.Notes
 {
     public class NoteModel
     {
