@@ -53,7 +53,7 @@ else
     {
         if (NoteId is null)
         {
-            Note = new();
+            Note ??= new();
         }
         else
         {
@@ -100,6 +100,7 @@ else
                 Note = result.Adapt<NoteModel>();
 
                 Console.WriteLine("Nota creada con ID: " + Note.Id);
+                NavigationManager.NavigateTo("/notes");
             }
             else
             {
