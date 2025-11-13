@@ -1,9 +1,6 @@
-﻿using Mapster;
-using MediatR;
-
-namespace TechNotes.Application.Notes.GetNoteById
+﻿namespace TechNotes.Application.Notes.GetNoteById
 {
-    public class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, NoteResponse?>
+    public class GetNoteByIdQueryHandler : IQueryHandler<GetNoteByIdQuery, NoteResponse?>
     {
         private readonly INoteRepository _noteRepository;
 
@@ -12,13 +9,13 @@ namespace TechNotes.Application.Notes.GetNoteById
             _noteRepository = noteRepository;
         }
 
-        public async Task<NoteResponse?> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<NoteResponse?>> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
         {
             var note = await _noteRepository.GetNoteByIdAsync(request.Id);
 
             if (note is null)
             {
-                return null;
+                return Result.Fail<NoteResponse?>("Nota no encontrada") ;
             }
             
             return note.Adapt<NoteResponse>();

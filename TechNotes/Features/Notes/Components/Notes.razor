@@ -9,7 +9,11 @@
 <h3>Notes</h3>
 <a href="/note-editor" class="btn btn-primary">Crear Nota</a>
 
-@if (!notes.Any())
+@if (notes is null)
+{
+    <p>Cargando notas...</p>
+}
+else if (!notes.Any())
 {
     <p>No hay notas que mostrar</p>
 }
@@ -26,7 +30,7 @@ else
 
 
 @code {
-    private List<NoteResponse> notes = new List<NoteResponse>();
+    private List<NoteResponse>? notes = new List<NoteResponse>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,7 +38,7 @@ else
 
         if (result is not null)
         {
-            notes = result.ToList();
+            notes = result.IsSuccesful ? result : new List<NoteResponse>();
         }
     }
 

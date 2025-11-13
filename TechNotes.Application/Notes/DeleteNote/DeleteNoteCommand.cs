@@ -1,8 +1,6 @@
-﻿using MediatR;
-
-namespace TechNotes.Application.Notes.DeleteNote
+﻿namespace TechNotes.Application.Notes.DeleteNote
 {
-    public class DeleteNoteCommand : IRequest<bool>
+    public class DeleteNoteCommand : ICommand
     {
         public int Id { get; set; }
     }

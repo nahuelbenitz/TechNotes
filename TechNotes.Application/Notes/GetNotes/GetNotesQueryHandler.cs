@@ -1,10 +1,6 @@
-﻿using Mapster;
-using MediatR;
-using TechNotes.Domain.Notes;
-
-namespace TechNotes.Application.Notes.GetNotes
+﻿namespace TechNotes.Application.Notes.GetNotes
 {
-    public class GetNotesQueryHandler : IRequestHandler<GetNotesQuery, List<NoteResponse>>
+    public class GetNotesQueryHandler : IQueryHandler<GetNotesQuery, List<NoteResponse>>
     {
         private readonly INoteRepository _noteRepository;
 
@@ -13,7 +9,7 @@ namespace TechNotes.Application.Notes.GetNotes
             _noteRepository = noteRepository;
         }
 
-        public async Task<List<NoteResponse>> Handle(GetNotesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<NoteResponse>>> Handle(GetNotesQuery request, CancellationToken cancellationToken)
         {
             var notes = await _noteRepository.GetAllNotesAsync();
 
