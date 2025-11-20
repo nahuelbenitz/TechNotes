@@ -3,11 +3,14 @@
 @attribute [StreamRendering]
 
 @inject ISender Sender
+@inject INoteColorService NoteColorService
 
 
 <PageTitle>Notes</PageTitle>
 <h3>Notes</h3>
 <a href="/note-editor" class="btn btn-primary">Crear Nota</a>
+
+
 
 @if (notes is null)
 {
@@ -19,15 +22,30 @@ else if (!notes.Any())
 }
 else
 {
-    @foreach (var note in notes)
-    {
-        <h4>@note.Title</h4>
-        <p> @note.Content</p>
-        <small>@note.CreatedAt</small>
-        <a href="/note-editor/@note.Id" class="btn btn-success"> Editar</a>
-    }
-}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:gird-cols-5 gap-6">
+            @foreach (var note in notes)
+            {
+                <article class="overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg" style="@NoteColorService.GetNoteInlineStyle(note.Id)">
+                    <div class="bg-white p-4 sm:p-6">
+                        <time datetime="2022-10-10" class="block text-xs text-gray-500"> @note.CreatedAt </time>
 
+                        <a href="/note-editor/@note.Id">
+                            <h3 class="mt-0.5 text-lg text-gray-900">
+                                @note.Title
+                            </h3>
+                        </a>
+
+                        <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+                            @note.Content
+                        </p>
+                    </div>
+                </article>
+            }
+
+        </div>
+    </div>
+}
 
 @code {
     private List<NoteResponse>? notes = new List<NoteResponse>();
@@ -43,3 +61,6 @@ else
     }
 
 }
+
+
+                               
