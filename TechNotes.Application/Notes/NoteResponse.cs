@@ -7,6 +7,7 @@
         string? Content,
         DateTime PublishedAt,
         bool IsPublished,
-        DateTime CreatedAt
+        DateTime CreatedAt,
+        string? UserName
     );
 }

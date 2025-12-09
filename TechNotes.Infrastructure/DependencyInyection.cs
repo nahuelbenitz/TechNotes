@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TechNotes.Application.Authentication;
 using TechNotes.Application.Notes;
+using TechNotes.Domain.User;
 using TechNotes.Infrastructure.Authentication;
 using TechNotes.Infrastructure.Repositories;
 
@@ -23,12 +24,13 @@ namespace TechNotes.Infrastructure
             });
 
             services.AddScoped<INoteRepository, NoteRepository>();
-            AddAuthentication(services);
+            services.AddScoped<IUserRepository, UserRepository>();
+            AddAuthentications(services);
             return services;
         }
 
 
-        public static void AddAuthentication(this IServiceCollection services)
+        public static void AddAuthentications(this IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, BlazorAuthorizationMiddlewareResultHandler>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
