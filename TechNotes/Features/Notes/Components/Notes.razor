@@ -31,28 +31,45 @@ else
                 <article class="overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg" style="@NoteColorService.GetNoteInlineStyle(note.Id)">
                     <div class="bg-white p-4 sm:p-6">
                         <time datetime="2022-10-10" class="block text-xs text-gray-500"> @note.CreatedAt </time>
-                        <AuthorizeView>
-                            <Authorized>
-                                <a href="/note-editor/@note.Id">
-                                    <h3 class="mt-0.5 text-lg text-gray-900">
-                                        @note.Title
-                                    </h3>
-                                </a>
-                            </Authorized>
-                            <NotAuthorized>
-                                <p>
-                                    <h3 class="mt-0.5 text-lg text-gray-900">
-                                        @note.Title
-                                    </h3>
-                                </p>
-                            </NotAuthorized>
-                        </AuthorizeView>
+
+                        <a href="/note-detail/@note.Id">
+                            <h3 class="mt-0.5 text-lg text-gray-900">
+                                @note.Title
+                            </h3>
+                        </a>
+
 
                         <p class="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
                             @note.Content
                         </p>
                     </div>
+
+                    <!-- Pie de la nota -->
+                    <div class="px-4 py-3 bg-white border-t border-gray-200 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <p class="text-xs font-semibold text-gray-800">@note.CreatedAt.ToString("dd MMM yyyy")</p>
+                            <p class="text-xs text-gray-600">@note.UserName</p>
+                        </div>
+
+                        <!-- Botón editar -->
+                        <AuthorizeView Roles="Admin, Writer">
+                            <Authorized>
+                                <a href="/note-editor/@note.Id"
+                                   class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                   style="text-decoration: none;" onclick="event.stopPropagation()">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Editar</span>
+                                </a>
+                            </Authorized>
+                        </AuthorizeView>
+                    </div>
                 </article>
+
+                
             }
 
         </div>

@@ -43,6 +43,7 @@ namespace TechNotes.Infrastructure
                 options.DefaultChallengeScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
             services.AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
