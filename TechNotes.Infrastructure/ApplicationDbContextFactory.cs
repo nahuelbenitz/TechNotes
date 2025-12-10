@@ -9,8 +9,8 @@ namespace TechNotes.Infrastructure
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-            optionsBuilder.UseSqlServer("Server=IDEAPAD-NAHUEL;Database=TechNotesDb;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true",
-            //optionsBuilder.UseSqlServer("Data Source=NOT026;Initial Catalog=TechNotesDb;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true",
+            //optionsBuilder.UseSqlServer("Server=IDEAPAD-NAHUEL;Database=TechNotesDb;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true",
+            optionsBuilder.UseSqlServer("Data Source=NOT026;Initial Catalog=TechNotesDb;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true",
                 b => b.MigrationsAssembly("TechNotes.Infrastructure"));
             return new ApplicationDbContext(optionsBuilder.Options);
         }
