@@ -7,9 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TechNotes.Application.Authentication;
 using TechNotes.Application.Notes;
+using TechNotes.Application.Users;
 using TechNotes.Domain.User;
 using TechNotes.Infrastructure.Authentication;
 using TechNotes.Infrastructure.Repositories;
+using TechNotes.Infrastructure.Users;
 
 namespace TechNotes.Infrastructure
 {
@@ -25,7 +27,9 @@ namespace TechNotes.Infrastructure
 
             services.AddScoped<INoteRepository, NoteRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
             AddAuthentications(services);
+            services.AddHttpContextAccessor();
             return services;
         }
 

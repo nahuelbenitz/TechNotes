@@ -1,4 +1,5 @@
-﻿using TechNotes.Domain.User;
+﻿using TechNotes.Application.Users;
+using TechNotes.Domain.User;
 
 namespace TechNotes.Application.Notes.GetNotes
 {
@@ -6,11 +7,13 @@ namespace TechNotes.Application.Notes.GetNotes
     {
         private readonly INoteRepository _noteRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public GetNotesQueryHandler(INoteRepository noteRepository, IUserRepository userRepository)
+        public GetNotesQueryHandler(INoteRepository noteRepository, IUserRepository userRepository, IUserService userService)
         {
             _noteRepository = noteRepository;
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         public async Task<Result<List<NoteResponse>>> Handle(GetNotesQuery request, CancellationToken cancellationToken)
@@ -26,6 +29,8 @@ namespace TechNotes.Application.Notes.GetNotes
                 {
                     var user = await _userRepository.GetUserByIdAsync(note.UserId);
                     noteResponse.UserName = user?.UserName ?? "Desconocido";
+                    noteResponse.userId = note.UserId;
+                    noteResponse.canEdit = await _userService.CurrentUserCanUpdateNoteAsync(note.Id);
                 }
                 else
                 {

@@ -8,6 +8,8 @@
         DateTime PublishedAt,
         bool IsPublished,
         DateTime CreatedAt,
-        string? UserName
+        string? UserName,
+        string? userId,
+        bool canEdit
     );
 }

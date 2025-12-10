@@ -1,6 +1,7 @@
 ﻿@page "/note-editor"
 @page "/note-editor/{NoteId:int}"
 
+
 @attribute [Authorize(Roles = "Admin, Writer")]
 @inject ISender Sender
 @inject NavigationManager NavigationManager;
@@ -183,7 +184,6 @@
         else
         {
             var command = Note.Adapt<CreateNoteCommand>();
-            command.UserId = UserManager.GetUserId(HttpContext.User);
             var result = await Sender.Send(command);
             if (result.IsSuccesful)
             {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TechNotes.Infrastructure.Authentication;
+using TechNotes.Infrastructure.Users;
 
 namespace TechNotes.Controllers
 {
