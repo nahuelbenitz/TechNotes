@@ -65,5 +65,13 @@ namespace TechNotes.Infrastructure.Repositories
 
             return true;
         }
+
+        public async Task<List<Note>> GetNotesByUserAsync(string userId)
+        {
+            var notes = await _context.Notes
+                .Where(n => n.UserId == userId)
+                .ToListAsync();
+            return notes;
+        }
     }
 }

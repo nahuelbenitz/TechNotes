@@ -75,6 +75,7 @@ app.UseAntiforgery();
 app.MapControllers();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(TechNotes.Client._Imports).Assembly);
 
 app.Run();
