@@ -8,15 +8,40 @@ namespace TechNotes.Infrastructure.Users
 {
     public class UserService : IUserService
     {
-        private readonly HttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
         private readonly INoteRepository _noteRepository;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserService(INoteRepository noteRepository, UserManager<User> userManager, HttpContextAccessor httpContextAccessor)
+        public UserService(INoteRepository noteRepository, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
         {
             _noteRepository = noteRepository;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _roleManager = roleManager;
+        }
+
+        public async Task AddUseRoleAsync(string userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return;
+            }
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception("Error al crear el rol");
+                }
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Error al agregar el rol al usuario");
+            }
         }
 
         public async Task<bool> CurrentUserCanCreateNoteAsync()
@@ -47,9 +72,9 @@ namespace TechNotes.Infrastructure.Users
             var isWriter = await _userManager.IsInRoleAsync(user, "Writer");
             var note = await _noteRepository.GetNoteByIdAsync(noteId);
 
-            if (note is null) 
-            { 
-                return false; 
+            if (note is null)
+            {
+                return false;
             }
 
             var isAuthorized = isAdmin || (isWriter && note.UserId == user.Id);
@@ -69,6 +94,18 @@ namespace TechNotes.Infrastructure.Users
             return user.Id;
         }
 
+        public async Task<List<string>> GetUserRolesAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return new List<string>();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.ToList();
+        }
+
         public async Task<bool> IsCurrentUserInRoleAsync(string role)
         {
             var user = await GetCurrentUser();
@@ -76,6 +113,25 @@ namespace TechNotes.Infrastructure.Users
             var isUserInRole = user is not null && await _userManager.IsInRoleAsync(user, role);
 
             return isUserInRole;
+        }
+
+        public async Task RemoveToleFromUserAsync(string userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                throw new Exception("Usuario no encontrado");
+            }
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                throw new Exception("Rol no encontrado");
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Error al eliminar el rol del usuario");
+            }
         }
 
         private async Task<User?> GetCurrentUser()
